@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +7,14 @@ public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private float moveSpd = 5f;
 
+    [SerializeField] private ScoreHandler _crashScore;
+
     private Animator _anim;
     private Rigidbody2D _rb;
 
     private string _currentAnim;
-    
+    private float _prevSpd;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +49,15 @@ public class PlayerMove : MonoBehaviour
             _currentAnim = "SharkMoveRight";
         }
 
+        _prevSpd = _rb.velocity.magnitude;
         _anim.Play(_currentAnim);
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (_prevSpd >= 1 * moveSpd)
+        {
+            _crashScore.UpdateScore(1);
+        }
     }
 }
