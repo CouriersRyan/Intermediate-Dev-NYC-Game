@@ -89,12 +89,12 @@ public class PlayerMove : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        _toBoost = baseToBoost;
+        _spdMultiplier = 0.5f;
         if (_prevVelLargestAxis >= 1.5f * moveSpd && other.collider.CompareTag("Obstacle"))
         {
             crashScore.UpdateScore(1);
             ReleaseBooks(3, transform);
-            _toBoost = baseToBoost;
-            _spdMultiplier = 0.5f;
         }
     }
 
