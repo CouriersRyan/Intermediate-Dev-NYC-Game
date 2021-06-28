@@ -4,10 +4,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private float moveSpd = 5f;
-
-    [SerializeField] private ScoreHandler crashScore;
-    [SerializeField] private ScoreHandler pointScore;
-
+    
     [SerializeField] private GameObject book;
 
     private Animator _anim;
@@ -30,6 +27,9 @@ public class PlayerMove : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
 
         _toBoost = baseToBoost;
+        
+        gameObject.SetActive(false);
+        GameManager.GameStartEvent += ActivatePlayer;
     }
     
     
@@ -93,8 +93,9 @@ public class PlayerMove : MonoBehaviour
         _spdMultiplier = 0.5f;
         if (_prevVelLargestAxis >= 1.5f * moveSpd && other.collider.CompareTag("Obstacle"))
         {
-            crashScore.UpdateScore(1);
+            ScoreManager.Instance.UpdateCrash(1);
             ReleaseBooks(3, transform);
+            GameManager.Instance.shake.Shake();
         }
     }
 
@@ -102,7 +103,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (other.CompareTag("Scoring"))
         {
-            pointScore.UpdateScore(1);
+            ScoreManager.Instance.UpdatePoint(1);
             Destroy(other.gameObject);
         }
     }
@@ -113,5 +114,19 @@ public class PlayerMove : MonoBehaviour
         {
             Instantiate(book, transformTemp.position, Quaternion.identity);
         }
+    }
+
+    public void ActivatePlayer()
+    {
+        gameObject.SetActive(true);
+        ReleaseBooks(9, transform);
+        GameManager.Instance.shake.Shake();
+
+        GameManager.GameEndEvent += StopPlayer;
+    }
+
+    public void StopPlayer()
+    {
+        gameObject.SetActive(false);
     }
 }

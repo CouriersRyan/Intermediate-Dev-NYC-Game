@@ -20,4 +20,9 @@ public class ScoreHandler : MonoBehaviour
         _scoreInt += deltaScore;
         _tmpScore.text = _scoreText + _scoreInt;
     }
+
+    public int GetScore()
+    {
+        return _scoreInt;
+    }
 }
